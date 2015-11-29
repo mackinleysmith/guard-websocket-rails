@@ -12,12 +12,12 @@ module Guard
     end
 
     def start
-      system("rake sunspot:solr:start RAILS_ENV=#{@environment}")
+      system("rake websocket_rails:start_server RAILS_ENV=#{@environment}")
       UI.info "Websocket standalone server started (#{@environment})"
     end
 
     def stop
-      system("rake sunspot:solr:stop RAILS_ENV=#{@environment}")
+      system("rake websocket_rails:stop_server RAILS_ENV=#{@environment}")
       UI.info "Websocket standalone server stopped (#{@environment})"
     end
 
