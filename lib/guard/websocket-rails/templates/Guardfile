@@ -1,0 +1,4 @@
+guard 'websocket-rails' do
+  watch('Gemfile.lock')
+  watch('config/initializers/websocket-rails.rb')
+end
