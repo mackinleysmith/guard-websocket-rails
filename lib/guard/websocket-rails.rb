@@ -8,7 +8,6 @@ module Guard
 
     def initialize(watchers=[], options={})
       super
-
       @environment = options[:environment] || 'development'
     end
 
