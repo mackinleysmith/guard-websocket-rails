@@ -1,6 +1,7 @@
 require 'guard'
 require 'guard/guard'
 require 'guard/websocket-rails/version'
+# require 'guard/compat/plugin'
 
 module Guard
   class WebsocketRails < Guard
@@ -30,5 +31,7 @@ module Guard
       reload
     end
 
+  end
+  class Websocketrails < WebsocketRails
   end
 end
