@@ -1,12 +1,12 @@
-require 'guard'
-require 'guard/guard'
-require 'guard/websocket-rails/version'
-# require 'guard/compat/plugin'
+# require 'guard'
+# require 'guard/guard'
+# require 'guard/websocket-rails/version'
+require 'guard/compat/plugin'
 
 module Guard
-  class WebsocketRails < Guard
+  class WebsocketRails < Plugin
 
-    def initialize(watchers=[], options={})
+    def initialize(options={})
       super
       @environment = options[:environment] || 'development'
     end
