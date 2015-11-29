@@ -4,7 +4,7 @@ require 'guard/websocket-rails/version'
 # require 'guard/compat/plugin'
 
 module Guard
-  class Websocketrails < Guard
+  class WebsocketRails < Guard
 
     def initialize(watchers=[], options={})
       super
@@ -31,6 +31,4 @@ module Guard
     end
 
   end
-  # class Websocketrails < WebsocketRails
-  # end
 end
