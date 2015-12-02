@@ -59,9 +59,12 @@ module Guard
       o << '.pid'
     end
     def pid; has_pid? ? read_pid : nil end
+    def has_pid?; File.file? pid_file end
+    def read_pid; Integer(File.read(pid_file)); rescue ArgumentError; nil end
+
 
     def environment
-      { 'RAILS_ENV' => options[:zeus] ? nil : options[:environment] }
+      { 'RAILS_ENV' => options[:zeus] ? nil : options[:environment].to_s }
     end
 
     def build_rake_command
