@@ -86,6 +86,7 @@ module Guard
       defined?(::Bundler) ? ::Bundler.with_clean_env { yield } : yield
     end
 
+    def sleep_time; options[:timeout].to_f / MAX_WAIT_COUNT.to_f end
     def wait_for_loop
       count = 0
       while !yield && count < MAX_WAIT_COUNT
