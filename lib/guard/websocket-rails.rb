@@ -35,15 +35,13 @@ module Guard
       end
       run_wsr_command!('start_server')
       wait_for_pid
-      Compat::UI.info "Websocket standalone server started (#{options[:environment]})"
+      UI.info "Websocket standalone server started (#{options[:environment]})"
       if redis_guards.any?
-        # UI.info "Guard callbacks before starting: #{Guard::Plugin.callbacks}"
-        # UI.info "Guard::Redis callbacks before starting: #{Guard::Redis.callbacks}"
-        on_stop = -> { UI.info 'I GET CALLED!!'; stop }
-        Guard::Redis.add_callback on_stop, redis_guards[0], :stop_begin
-        # UI.info "All Guard callbacks: #{Guard::Plugin.callbacks}"
-        # UI.info "All Guard::Redis callbacks: #{Guard::Redis.callbacks}"
-        # UI.info "Redis callbacks: #{redis_guards[0].callbacks}"
+        stop_the_server = Proc.new do
+          UI.debug 'Shutting down WebsocketRails server before Redis stops.'
+          stop
+        end
+        Guard::Redis.add_callback stop_the_server, redis_guards[0], :stop_begin
       end
     end
 
