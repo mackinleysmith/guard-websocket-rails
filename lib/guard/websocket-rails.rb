@@ -35,10 +35,10 @@ module Guard
       end
       run_wsr_command!('start_server')
       wait_for_pid
-      UI.info "Websocket standalone server started (#{options[:environment]})"
+      Compat::UI.info "Websocket standalone server started (#{options[:environment]})"
       if redis_guards.any?
         on_stop = Proc.new do
-          UI.info 'I GET CALLED!!'
+          Compat::UI.info 'I GET CALLED!!'
           puts 'I GET CALLED!!'
         end
         redis_guards[0].callbacks << { events: :stop_begin, listener: on_stop }
