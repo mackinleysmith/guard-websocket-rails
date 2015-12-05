@@ -37,14 +37,18 @@ module Guard
       wait_for_pid
       Compat::UI.info "Websocket standalone server started (#{options[:environment]})"
       if redis_guards.any?
+        UI.info "redis_guards count: #{redis_guards.count}"
+        UI.info "Guard callbacks before starting: #{Guard::Plugin.callbacks}"
+        UI.info "Guard::Redis callbacks before starting: #{Guard::Redis.callbacks}"
         on_stop = Proc.new do
           Compat::UI.info 'I GET CALLED!!'
           puts 'I GET CALLED!!'
         end
         # redis_guards[0].callbacks << { events: :stop_begin, listener: on_stop }
         # Guard::Plugin.add_callback(on_stop, redis_guards[0], :stop_begin)
-        Guard::Plugin.add_callback(on_stop, Guard::Redis, :stop_begin)
-        UI.info "All guard callbacks: #{Guard::Plugin.callbacks}"
+        Guard::Redis.add_callback(on_stop, redis_guards[0], :stop_begin)
+        UI.info "All Guard callbacks: #{Guard::Plugin.callbacks}"
+        UI.info "All Guard::Redis callbacks: #{Guard::Redis.callbacks}"
         UI.info "Redis callbacks: #{redis_guards[0].callbacks}"
       end
     end
