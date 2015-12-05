@@ -42,8 +42,8 @@ module Guard
           puts 'I GET CALLED!!'
         end
         # redis_guards[0].callbacks << { events: :stop_begin, listener: on_stop }
-        UI.info redis_guards[0].callbacks
         Guard::Plugin.add_callback(on_stop, redis_guards[0], :stop_begin)
+        UI.info redis_guards[0].callbacks
       end
     end
 
