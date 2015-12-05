@@ -38,11 +38,12 @@ module Guard
       UI.info "Websocket standalone server started (#{options[:environment]})"
       if redis_guards.any?
         on_stop = Proc.new do
+          UI.info 'I GET CALLED!!'
           puts 'I GET CALLED!!'
         end
-        redis_guards[0].callbacks << { events: :stop_begin, listener: on_stop }
+        # redis_guards[0].callbacks << { events: :stop_begin, listener: on_stop }
         UI.info redis_guards[0].callbacks
-        # Guard::Plugin.add_callback(-> { puts 'I GET CALLED!'; stop }, redis_guards[0], :stop_begin)
+        Guard::Plugin.add_callback(on_stop, redis_guards[0], :stop_begin)
       end
     end
 
