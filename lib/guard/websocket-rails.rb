@@ -20,20 +20,23 @@ module Guard
     end
 
     def start
+      if ( redis_guards = Guard.state.session.plugins.all('redis') ).empty?
+        UI.info "[Guard::WebsocketRails::Error] Could not find zeus socket file."
+        return false
+      end
       if options[:zeus] && !wait_for_zeus
-        UI.info "[Guard::Sunspot::Error] Could not find zeus socket file."
+        UI.info "[Guard::WebsocketRails::Error] Could not find zeus socket file."
         return false
       end
       run_wsr_command!('start_server')
-      # system("rake websocket_rails:start_server RAILS_ENV=#{options[:environment]}")
       wait_for_pid
       UI.info "Websocket standalone server started (#{options[:environment]})"
+      redis_guards.add_callback(-> { puts 'I GET CALLED!' }, self, :stop_begin)
     end
 
     def stop
       return unless has_pid?
       run_wsr_command!('stop_server')
-      # system("rake websocket_rails:stop_server RAILS_ENV=#{options[:environment]}")
       wait_for_no_pid
       UI.info "Websocket standalone server stopped (#{options[:environment]})"
     end
@@ -61,7 +64,6 @@ module Guard
     def pid; has_pid? ? read_pid : nil end
     def has_pid?; File.file? pid_file end
     def read_pid; Integer(File.read(pid_file)); rescue ArgumentError; nil end
-
 
     def environment
       { 'RAILS_ENV' => options[:zeus] ? nil : options[:environment].to_s }
