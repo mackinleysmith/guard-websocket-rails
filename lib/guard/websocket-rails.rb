@@ -10,6 +10,7 @@ module Guard
       bundler: false,
       zeus: false,
       pid_file: nil,
+      redis_port: 6379,
       timeout: 30
     }
 
@@ -21,8 +22,12 @@ module Guard
 
     def start
       if ( redis_guards = Guard.state.session.plugins.all('redis') ).empty?
-        UI.info "[Guard::WebsocketRails::Error] Guard::Redis is not running."
-        return false
+        UI.warning "[Guard::WebsocketRails::Error] Guard::Redis is not running."
+        if `lsof -Pi :#{options[:redis_port]} -sTCP:LISTEN -t`.strip.length == 0
+          UI.error "[Guard::WebsocketRails::Error] You must boot redis " +
+            "on port #{options[:redis_port]} before starting the websocket server."
+          return false
+        end
       end
       if options[:zeus] && !wait_for_zeus
         UI.info "[Guard::WebsocketRails::Error] Could not find zeus socket file."
@@ -31,8 +36,14 @@ module Guard
       run_wsr_command!('start_server')
       wait_for_pid
       UI.info "Websocket standalone server started (#{options[:environment]})"
-      UI.info redis_guards[0].callbacks
-      # Guard::Plugin.add_callback(-> { puts 'I GET CALLED!'; stop }, redis_guards[0], :stop_begin)
+      if redis_guards.any?
+        on_stop = Proc.new do
+          puts 'I GET CALLED!!'
+        end
+        redis_guards[0].callbacks << { events: :stop_begin, listener: on_stop }
+        UI.info redis_guards[0].callbacks
+        # Guard::Plugin.add_callback(-> { puts 'I GET CALLED!'; stop }, redis_guards[0], :stop_begin)
+      end
     end
 
     def stop
