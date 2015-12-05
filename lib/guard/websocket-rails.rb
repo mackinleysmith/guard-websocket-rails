@@ -39,11 +39,8 @@ module Guard
       if redis_guards.any?
         # UI.info "Guard callbacks before starting: #{Guard::Plugin.callbacks}"
         # UI.info "Guard::Redis callbacks before starting: #{Guard::Redis.callbacks}"
-        on_stop = Proc.new do
-          UI.info 'I GET CALLED!!'
-          stop
-        end
-        Guard::Redis.add_callback(on_stop, redis_guards[0], :stop_begin)
+        on_stop = -> { UI.info 'I GET CALLED!!'; stop }
+        Guard::Redis.add_callback on_stop, redis_guards[0], :stop_begin
         # UI.info "All Guard callbacks: #{Guard::Plugin.callbacks}"
         # UI.info "All Guard::Redis callbacks: #{Guard::Redis.callbacks}"
         # UI.info "Redis callbacks: #{redis_guards[0].callbacks}"
