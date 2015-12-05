@@ -31,7 +31,8 @@ module Guard
       run_wsr_command!('start_server')
       wait_for_pid
       UI.info "Websocket standalone server started (#{options[:environment]})"
-      Guard::Plugin.add_callback(-> { puts 'I GET CALLED!'; stop }, redis_guards[0], :stop_begin)
+      puts redis_guards[0].methods.select{|m| m =~ /callback/ }
+      # Guard::Plugin.add_callback(-> { puts 'I GET CALLED!'; stop }, redis_guards[0], :stop_begin)
     end
 
     def stop
